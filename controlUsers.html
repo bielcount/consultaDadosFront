@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administração de Usuários</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #313136, #000000);
+            color: #fff;
+            text-align: center;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+            flex-grow: 1;
+            align-items: center;
+        }
+        .box {
+            background: rgba(230, 227, 227, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            flex: 1;
+            height: 500px; /* Altura fixa para ambas */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .input-group {
+            margin: 10px 0;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+        .input-group input::placeholder {
+            color: #ddd;
+        }
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background: #e94560;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+            min-width: 80px;
+        }
+        .btn:hover {
+            background: #d63049;
+        }
+        .btn-secondary {
+            background: #3498db;
+        }
+        .btn-secondary:hover {
+            background: #2980b9;
+        }
+        .btn-danger {
+            background: #e74c3c;
+        }
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        .user-list {
+            margin-top: 10px;
+            text-align: left;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+        .user-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .user-item span {
+            flex: 1;
+        }
+        footer {
+            text-align: center;
+            padding: 15px;
+            background: #17191d;
+            color: #fff;
+            font-size: 14px;
+            width: 100%;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="title">Administração de Usuários</div>
+    <div class="container">
+        <!-- Seção de Lista de Usuários -->
+        <div class="box">
+            <h2>Lista de Usuários</h2>
+            <div class="input-group">
+                <input type="text" id="search" placeholder="Buscar por Nome ou ID" onkeyup="buscarUsuarios()">
+            </div>
+            <div class="user-list" id="userList"></div>
+        </div>
+
+        <!-- Seção de Cadastro / Edição -->
+        <div class="box">
+            <h2 id="formTitle">Cadastrar Usuário</h2>
+            <form id="cadastroForm">
+                <input type="hidden" id="userId">
+                <div class="input-group">
+                    <input type="text" id="nome" placeholder="Nome" required>
+                </div>
+                <div class="input-group">
+                    <input type="email" id="email" placeholder="E-mail" required>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="senha" placeholder="Senha" required>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="telefone" placeholder="Telefone" required>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="empresa" placeholder="Empresa" required>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="cnpj" placeholder="CNPJ" required>
+                </div>
+                <button type="submit" class="btn">Salvar</button>
+                <button type="button" class="btn btn-secondary" onclick="limparFormulario()">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Gabriel Cardoso Fernandes. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        let usuarios = [];
+
+        async function carregarUsuarios() {
+            const userList = document.getElementById('userList');
+            userList.innerHTML = "Carregando...";
+
+            try {
+                const response = await fetch('https://apiconsultausuario.onrender.com/api/users');
+                usuarios = await response.json();
+                exibirUsuarios(usuarios);
+            } catch (error) {
+                userList.innerHTML = "Erro ao carregar usuários.";
+            }
+        }
+
+        function exibirUsuarios(lista) {
+            const userList = document.getElementById('userList');
+            userList.innerHTML = lista.map(user => `
+                <div class="user-item">
+                    <span><strong>${user.id}:</strong> ${user.nome} - ${user.email}</span>
+                    <button onclick="editarUsuario(${user.id})" class="btn btn-secondary">Editar</button>
+                    <button onclick="excluirUsuario(${user.id})" class="btn btn-danger">Excluir</button>
+                </div>
+            `).join('');
+        }
+
+        async function editarUsuario(id) {
+            try {
+                const response = await fetch(`https://apiconsultausuario.onrender.com/api/users/${id}`);
+                const user = await response.json();
+
+                document.getElementById('userId').value = user.id;
+                document.getElementById('nome').value = user.nome;
+                document.getElementById('email').value = user.email;
+                document.getElementById('senha').value = user.senha;
+                document.getElementById('telefone').value = user.telefone;
+                document.getElementById('empresa').value = user.empresa;
+                document.getElementById('cnpj').value = user.cnpj;
+
+                document.getElementById('formTitle').textContent = 'Editar Usuário';
+            } catch (error) {
+                alert("Erro ao buscar usuário.");
+            }
+        }
+
+        function excluirUsuario(id) {
+            if (confirm("Tem certeza que deseja excluir este usuário?")) {
+                fetch(`https://apiconsultausuario.onrender.com/api/users/${id}`, {
+                    method: 'DELETE'
+                }).then(() => carregarUsuarios());
+            }
+        }
+
+        function buscarUsuarios() {
+            const termo = document.getElementById('search').value.toLowerCase();
+            const filtrados = usuarios.filter(user => 
+                user.nome.toLowerCase().includes(termo) || user.id.toString().includes(termo)
+            );
+            exibirUsuarios(filtrados);
+        }
+
+        function limparFormulario() {
+            document.getElementById('cadastroForm').reset();
+            document.getElementById('formTitle').textContent = 'Cadastrar Usuário';
+        }
+
+        carregarUsuarios();
+    </script>
+</body>
+</html>
