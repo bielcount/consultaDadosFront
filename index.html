@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Consulta Tributária</title>
+
+    <!-- 🔹 Vercel Analytics -->
+    <script defer src="https://vercel.com/analytics/script.js"></script>
+    <script>
+        console.log("Vercel Analytics carregado.");
+    </script>
+
     <style>
         * {
             margin: 0;
@@ -104,34 +111,30 @@
     </footer>
 
     <script>
-document.getElementById('loginForm').addEventListener('submit', function(e) {
-    e.preventDefault(); // Evita o envio do formulário padrão
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Evita o envio do formulário padrão
 
-    const nome = document.getElementById('usuario').value;
-    const senha = document.getElementById('senha').value;
+            const nome = document.getElementById('usuario').value;
+            const senha = document.getElementById('senha').value;
 
-    fetch('https://apiconsultausuario.onrender.com/api/users') // Busca todos os usuários
-        .then(response => response.json())
-        .then(users => {
-            // Verifica se o usuário existe na lista
-            const usuarioEncontrado = users.find(user => user.nome === nome && user.senha === senha);
+            fetch('https://apiconsultausuario.onrender.com/api/users') // Busca todos os usuários
+                .then(response => response.json())
+                .then(users => {
+                    // Verifica se o usuário existe na lista
+                    const usuarioEncontrado = users.find(user => user.nome === nome && user.senha === senha);
 
-            if (usuarioEncontrado) {
-                alert('Login bem-sucedido!');
-                window.location.href = '/principal.html'; // Redireciona para a página principal
-            } else {
-                alert('Credenciais inválidas!');
-            }
-        })
-        .catch(error => {
-            console.error('Erro ao buscar usuários:', error);
-            alert('Erro ao tentar fazer login.');
+                    if (usuarioEncontrado) {
+                        alert('Login bem-sucedido!');
+                        window.location.href = '/principal.html'; // Redireciona para a página principal
+                    } else {
+                        alert('Credenciais inválidas!');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar usuários:', error);
+                    alert('Erro ao tentar fazer login.');
+                });
         });
-});
     </script>
-
-    <!-- Vercel Analytics -->
-    <script defer src="https://vercel.com/analytics/script.js"></script>
-
 </body>
 </html>
