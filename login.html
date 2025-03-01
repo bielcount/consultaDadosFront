@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Consulta Tributária</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #313136, #000000);
+            color: #fff;
+            text-align: center;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .login-container {
+            background: rgba(230, 227, 227, 0.1);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            text-align: center;
+            color: #fff;
+        }
+        .input-group {
+            margin: 10px 0;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+        .input-group input::placeholder {
+            color: #ddd;
+        }
+        .btn {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #e94560;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn:hover {
+            background: #d63049;
+        }
+        .btn-register {
+            background: #3498db;
+            margin-top: 10px;
+        }
+        .btn-register:hover {
+            background: #2980b9;
+        }
+        footer {
+            text-align: center;
+            padding: 15px;
+            background: #17191d;
+            color: #fff;
+            font-size: 14px;
+            width: 100%;
+            margin-top: auto;
+            position: absolute;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="title">Consulta Situação Tributária</div>
+    <div class="login-container">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <div class="input-group">
+                <input type="text" id="usuario" placeholder="Usuário ou E-mail" required>
+            </div>
+            <div class="input-group">
+                <input type="password" id="senha" placeholder="Senha" required>
+            </div>
+            <button type="submit" class="btn">Entrar</button>
+        </form>
+        <button onclick="window.location.href='/pages/cadastro_user.html'" class="btn btn-register">Cadastre-se</button>
+    </div>
+    <footer>
+        <p>&copy; 2024 Gabriel Cardoso Fernandes. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault(); // Evita o envio do formulário padrão
+
+    const nome = document.getElementById('usuario').value;
+    const senha = document.getElementById('senha').value;
+
+    fetch('https://apiconsultausuario.onrender.com/api/users') // Busca todos os usuários
+        .then(response => response.json())
+        .then(users => {
+            // Verifica se o usuário existe na lista
+            const usuarioEncontrado = users.find(user => user.nome === nome && user.senha === senha);
+
+            if (usuarioEncontrado) {
+                alert('Login bem-sucedido!');
+                window.location.href = '/principal.html'; // Redireciona para a página principal
+            } else {
+                alert('Credenciais inválidas!');
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao buscar usuários:', error);
+            alert('Erro ao tentar fazer login.');
+        });
+});
+
+    </script>
+</body>
+</html>

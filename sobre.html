@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #313136, #000000);
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        header {
+            width: 100%;
+            padding: 10px 0;
+            background: transparent;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+            position: absolute;
+            top: 0;
+        }
+
+        header nav a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 20px;
+            font-size: 16px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+        }
+
+        header nav a:hover {
+            color: #e94560;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background: rgba(161, 158, 158, 0.1); /* Fundo sutil para contraste */
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 80px; /* Ajuste para dar espaço ao cabeçalho */
+            backdrop-filter: blur(10px);
+        }
+
+        .container h1 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #ffffff; /* Cor de destaque para o título */
+        }
+
+        .container p {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #dcdcdc;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: #e94560;
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 30px;
+        }
+
+        .btn:hover {
+            background: #d63049;
+        }
+
+        footer {
+            padding: 15px;
+            background: #17191d;
+            color: #fff;
+            text-align: center;
+            width: 100%;
+            margin-top: auto; /* Garante que o rodapé fique na parte inferior */
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Cabeçalho -->
+    <header>
+        <nav>
+            <a href="/src/main.html">Início</a>
+            <a href="contato.html">Contato</a>
+            <a href="contribua.html">Contribua</a>
+        </nav>
+    </header>
+    
+    <!-- Conteúdo da página -->
+    <div class="container">
+        <h1>SOBRE O SITE</h1>
+        <p>
+            Este site foi criado com o objetivo de oferecer uma plataforma simples e eficiente para consultas tributárias. Ele permite que os usuários realizem consultas rápidas sobre diferentes informações fiscais, como CFOP, CST, e CNPJ, tudo de forma acessível e clara.
+        </p>
+        <p>
+            A ideia por trás deste projeto é fornecer um serviço que auxilie empresas e profissionais a obterem dados importantes para a gestão tributária, garantindo que possam se manter em conformidade com a legislação vigente de maneira ágil e sem complicações.
+        </p>
+        <p>
+            Estamos sempre trabalhando para melhorar a plataforma e adicionar novas funcionalidades que atendam cada vez mais às necessidades dos nossos usuários, tornando o processo de consulta tributária mais ágil e eficiente.
+        </p>
+        <a href="/pages/main.html" class="btn">Voltar à Página Inicial</a>
+    </div>
+
+    <!-- Rodapé -->
+    <footer>
+        <p>&copy; 2024 Gabriel Cardoso Fernandes. Todos os direitos reservados.</p>
+    </footer>
+
+</body>
+</html>

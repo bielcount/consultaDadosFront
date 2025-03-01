@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta CST-ICMS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #313136, #000000);
+            color: #fff;
+            text-align: center;
+        }
+        header {
+            width: 100%;
+            padding: 10px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: flex-end;
+            background: transparent;
+        }
+        header nav a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 20px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 60px;
+        }
+        .container {
+            background: rgba(230, 227, 227, 0.1);
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            color: #fff;
+            width: 90%;
+            max-width: 500px;
+            margin-top: 100px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            background: #fff;
+            color: #000;
+        }
+        .btn {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background: #e94560;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 300px;
+        }
+        #resultado {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/pages/sobre.html">Sobre</a>
+            <a href="/pages/telaEmDesenvolvimento.html">Contato</a>
+            <a href="/pages/telaEmDesenvolvimento.html">Contribua</a>
+        </nav>
+    </header>
+
+    <div class="title"><h3>Consulta CST-ICMS</h3></div>
+    <div class="container">
+        <h2>Consulta CST-ICMS</h2>
+        <p>Digite o código CST para realizar a consulta:</p>
+
+        <input type="text" id="cst" placeholder="Digite o código CST" required>
+        <div id="resultado"></div>
+        <button type="button" class="btn" onclick="consultarCST()">Consultar</button>
+        <a href="/pages/main.html" class="btn">Voltar à Página Inicial</a>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Gabriel Cardoso Fernandes. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        function consultarCST() {
+            const cst = document.getElementById('cst').value;
+            const resultadoDiv = document.getElementById('resultado');
+            resultadoDiv.innerHTML = '';
+
+            if (cst === '') {
+                resultadoDiv.innerHTML = '<p>Digite um código CST para consulta.</p>';
+                return;
+            }
+
+            fetch(`https://apiconsultadados.onrender.com/api/cst/${cst}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data) {
+                        resultadoDiv.innerHTML = `
+                            <p><strong>CST:</strong> ${data.A || data.codigo || 'N/A'}</p>
+                            <p><strong>Descrição:</strong> ${data.B || data.descricao || 'N/A'}</p>
+                        `;
+                    } else {
+                        resultadoDiv.innerHTML = '<p>Código CST não encontrado.</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar o CST:', error);
+                    resultadoDiv.innerHTML = '<p>Erro ao carregar dados. Tente novamente mais tarde.</p>';
+                });
+        }
+
+        document.getElementById('cst').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                consultarCST();
+            }
+        });
+    </script>
+</body>
+</html>

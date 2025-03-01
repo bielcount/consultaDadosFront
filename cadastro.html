@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Usuário - Consulta Tributária</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #313136, #000000);
+            color: #fff;
+            text-align: center;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .login-container {
+            background: rgba(230, 227, 227, 0.1);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            text-align: center;
+            color: #fff;
+        }
+        .input-group {
+            margin: 10px 0;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+        .input-group input::placeholder {
+            color: #ddd;
+        }
+        .btn {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #e94560;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn:hover {
+            background: #d63049;
+        }
+        .btn-register {
+            background: #3498db;
+            margin-top: 10px;
+        }
+        .btn-register:hover {
+            background: #2980b9;
+        }
+        .btn-back {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #3498db;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+        .btn-back:hover {
+            background: #2980b9;
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+        footer {
+            text-align: center;
+            padding: 15px;
+            background: #17191d;
+            color: #fff;
+            font-size: 14px;
+            width: 100%;
+            margin-top: auto;
+            position: absolute;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="title">Cadastro de Usuário</div>
+    <div class="login-container">
+        <h2>Preencha os dados</h2>
+        <form id="cadastroForm">
+            <div class="input-group">
+                <input type="text" id="nome" placeholder="Nome" required>
+            </div>
+            <div class="input-group">
+                <input type="email" id="email" placeholder="E-mail" required>
+            </div>
+            <div class="input-group">
+                <input type="password" id="senha" placeholder="Senha" required>
+            </div>
+            <div class="input-group">
+                <input type="text" id="telefone" placeholder="Telefone" required>
+            </div>
+            <div class="input-group">
+                <input type="text" id="empresa" placeholder="Empresa" required>
+            </div>
+            <div class="input-group">
+                <input type="text" id="cnpj" placeholder="CNPJ" required>
+            </div>
+            <button type="submit" class="btn">Cadastrar</button>
+        </form>
+        <p class="error-message" id="errorMessage"></p>
+        <button onclick="window.location.href='/pages/login.html'" class="btn btn-back">Voltar para Login</button>
+    </div>
+    <footer>
+        <p>&copy; 2024 Gabriel Cardoso Fernandes. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        document.getElementById('cadastroForm').addEventListener('submit', async function(e) {
+            e.preventDefault(); // Evita o envio do formulário padrão
+    
+            const nome = document.getElementById('nome').value;
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+            const telefone = document.getElementById('telefone').value;
+            const empresa = document.getElementById('empresa').value;
+            const cnpj = document.getElementById('cnpj').value;
+            const errorMessage = document.getElementById('errorMessage');
+
+            // Limpa mensagens anteriores
+            errorMessage.textContent = "";
+
+            try {
+                const response = await fetch('https://apiconsultausuario.onrender.com/api/users', {  
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        nome,
+                        email,
+                        senha,
+                        telefone,
+                        empresa,
+                        cnpj
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('Cadastro realizado com sucesso!');
+                    window.location.href = '/login.html'; 
+                } else {
+                    errorMessage.textContent = data.message || 'Erro ao cadastrar usuário!';
+                }
+            } catch (error) {
+                console.error('Erro ao salvar os dados:', error);
+                errorMessage.textContent = 'Ocorreu um erro. Tente novamente mais tarde.';
+            }
+        });
+    </script>
+    
+</body>
+</html>
