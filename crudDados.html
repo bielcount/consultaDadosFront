@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administração de Códigos Fiscais</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #313136, #000000);
+            color: #fff;
+            text-align: center;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+            flex-grow: 1;
+            align-items: center;
+        }
+        .box {
+            background: rgba(230, 227, 227, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            flex: 1;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .input-group {
+            margin: 10px 0;
+        }
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+        .input-group input::placeholder {
+            color: #ddd;
+        }
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background: #e94560;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+            min-width: 80px;
+        }
+        .btn:hover {
+            background: #d63049;
+        }
+        .btn-secondary {
+            background: #3498db;
+        }
+        .btn-secondary:hover {
+            background: #2980b9;
+        }
+        .btn-danger {
+            background: #e74c3c;
+        }
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        .user-list {
+            margin-top: 10px;
+            text-align: left;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+        .user-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .user-item span {
+            flex: 1;
+        }
+        footer {
+            text-align: center;
+            padding: 15px;
+            background: #17191d;
+            color: #fff;
+            font-size: 14px;
+            width: 100%;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="title">Administração de Códigos Fiscais</div>
+    <div class="container">
+        <div class="box">
+            <h2>Lista de Códigos</h2>
+            <div class="input-group">
+                <select id="tipoListagem" onchange="carregarCodigos()">
+                    <option value="cfop">CFOP</option>
+                    <option value="csosn">CSOSN</option>
+                    <option value="cst">CST</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <input type="text" id="search" placeholder="Buscar por Código" onkeyup="buscarCodigos()">
+            </div>
+            <div class="user-list" id="codeList"></div>
+        </div>
+
+        <div class="box">
+            <h2 id="formTitle">Cadastrar Código</h2>
+            <form id="cadastroForm">
+                <input type="hidden" id="codeId">
+                <div class="input-group">
+                    <select id="tipoCodigo" required>
+                        <option value="cfop">CFOP</option>
+                        <option value="csosn">CSOSN</option>
+                        <option value="cst">CST</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="codigo" placeholder="Código" required>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="descricao" placeholder="Descrição" required>
+                </div>
+                <div class="input-group" id="tipoField">
+                    <select id="tipo">
+                        <option value="Entrada">Entrada</option>
+                        <option value="Saída">Saída</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn">Salvar</button>
+                <button type="button" class="btn btn-secondary" onclick="limparFormulario()">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2024 Gabriel Cardoso Fernandes. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        let codigosList = [];
+
+        document.getElementById('tipoCodigo').addEventListener('change', function() {
+            document.getElementById('tipoField').style.display = 
+                this.value === 'cfop' ? 'block' : 'none';
+        });
+
+        async function carregarCodigos() {
+            const tipo = document.getElementById('tipoListagem').value;
+            const codeList = document.getElementById('codeList');
+            codeList.innerHTML = "Carregando...";
+
+            try {
+                const response = await fetch(`${API_URL}/${tipo}`);
+                codigosList = await response.json();
+                exibirCodigos(codigosList);
+            } catch (error) {
+                codeList.innerHTML = "Erro ao carregar códigos.";
+            }
+        }
+
+        function exibirCodigos(lista) {
+            const codeList = document.getElementById('codeList');
+            const tipo = document.getElementById('tipoListagem').value;
+            
+            codeList.innerHTML = lista.map(code => `
+                <div class="user-item">
+                    <span><strong>${code.codigo}:</strong> ${code.descricao} ${tipo === 'cfop' ? `(${code.tipo})` : ''}</span>
+                    <button onclick="editarCodigo('${code._id}')" class="btn btn-secondary">Editar</button>
+                    <button onclick="excluirCodigo('${code._id}')" class="btn btn-danger">Excluir</button>
+                </div>
+            `).join('');
+        }
+
+        function buscarCodigos() {
+            const termo = document.getElementById('search').value.toLowerCase();
+            const filtrados = codigosList.filter(code =>
+                code.codigo.toLowerCase().includes(termo) || 
+                code.descricao.toLowerCase().includes(termo)
+            );
+            exibirCodigos(filtrados);
+        }
+
+        function limparFormulario() {
+            document.getElementById('cadastroForm').reset();
+            document.getElementById('formTitle').textContent = 'Cadastrar Código';
+            document.getElementById('codeId').value = '';
+        }
+
+        carregarCodigos();
+        document.getElementById('tipoField').style.display = 'block';
+    </script>
+</body>
+</html>
